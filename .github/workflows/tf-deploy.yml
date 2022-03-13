@@ -34,18 +34,18 @@ jobs:
         run: |
           case ${{github.ref}} in
             refs/heads/dev)
-              echo 'KEEP_ENV=dev' >> $GITHUB_ENV
+              echo 'KEEP_APP_ENV=dev' >> $GITHUB_ENV
             ;;
             refs/heads/stg)
-              echo 'KEEP_ENV=stg' >> $GITHUB_ENV
+              echo 'KEEP_APP_ENV=stg' >> $GITHUB_ENV
             ;;
             refs/heads/prd)
-              echo 'KEEP_ENV=prd' >> $GITHUB_ENV
+              echo 'KEEP_APP_ENV=prd' >> $GITHUB_ENV
             ;;
           esac
 
       - name: Terraform Init
-        run: keep-tf-init-in-${{env.KEEP_ENV}}
+        run: keep-tf-init-in-${{env.KEEP_APP_ENV}}
 
       - name: Terraform Format Check
         run: terraform fmt -check
@@ -54,7 +54,7 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
-        run: keep-tf-plan-in-${{env.KEEP_ENV}}
+        run: keep-tf-plan-in-${{env.KEEP_APP_ENV}}
 
       - name: Terraform Apply
-        run: keep-tf-apply-in-${{env.KEEP_ENV}}
+        run: keep-tf-apply-in-${{env.KEEP_APP_ENV}}

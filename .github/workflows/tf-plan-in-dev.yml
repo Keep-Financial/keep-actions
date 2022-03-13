@@ -14,7 +14,7 @@ env:
   KEEP_BUILD_UTILS_HOME: /etc/keep-build-utils
   KEEP_DEPLOY_ENV: github_actions
   KEEP_TF_PLAN_OUTPUT_FILE: ./tf-plan
-  KEEP_ENV: dev
+  KEEP_APP_ENV: dev
 
 jobs:
   tf-deploy:
@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Terraform Init
-        run: keep-tf-init-in-${{env.KEEP_ENV}}
+        run: keep-tf-init-in-${{env.KEEP_APP_ENV}}
 
       - name: Terraform Format Check
         run: terraform fmt -check
@@ -41,4 +41,4 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
-        run: keep-tf-plan-in-${{env.KEEP_ENV}}
+        run: keep-tf-plan-in-${{env.KEEP_APP_ENV}}
