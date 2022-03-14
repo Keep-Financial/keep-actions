@@ -15,6 +15,7 @@ env:
   KEEP_DEPLOY_ENV: github_actions
   KEEP_TF_PLAN_OUTPUT_FILE: ./tf-plan
   KEEP_APP_ENV: dev
+  KEEP_LOG_LEVEL: trace
 
 jobs:
   tf-deploy:
