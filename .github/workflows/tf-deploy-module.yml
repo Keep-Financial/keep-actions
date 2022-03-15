@@ -1,4 +1,4 @@
-name: 'Terraform Deploy Root'
+name: 'Terraform Deploy Module'
 
 on:
   workflow_call:
@@ -13,12 +13,11 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
   KEEP_BUILD_UTILS_HOME: /etc/keep-build-utils
   KEEP_DEPLOY_ENV: github_actions
-  KEEP_TF_PLAN_OUTPUT_FILE: ./tf-plan
 
 jobs:
-  tf-deploy:
-    name: 'Terraform Deploy'
-#    environment: ${{inputs.ENV}}
+  tf-deploy-module:
+    name: 'Terraform Deploy Module'
+    #    environment: ${{inputs.ENV}}
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/keep-financial/keep-build-image:latest
@@ -44,14 +43,8 @@ jobs:
             ;;
           esac
 
-      - name: Terraform Init
-        run: keep-tf-init-in-${{env.KEEP_APP_ENV}}
+      - name: Zip module
+        run: keep-tf-package-module-in-${{env.KEEP_APP_ENV}}
 
-      - name: Terraform Validate
-        run: terraform validate
-
-      - name: Terraform Plan
-        run: keep-tf-plan-in-${{env.KEEP_APP_ENV}}
-
-      - name: Terraform Apply
-        run: keep-tf-apply-in-${{env.KEEP_APP_ENV}}
+      - name: Upload module
+        run: keep-tf-upload-packaged-module-in-${{env.KEEP_APP_ENV}}
