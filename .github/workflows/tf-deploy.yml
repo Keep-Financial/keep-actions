@@ -36,6 +36,7 @@ jobs:
         shell: bash
         run: |
           if [[ "${{inputs.KEEP_APP_ENV}}" != "" ]]; then
+            echo 'KEEP_APP_ENV=${{inputs.KEEP_APP_ENV}}' >> $GITHUB_ENV
             exit 0
           fi
           case ${{github.ref}} in
