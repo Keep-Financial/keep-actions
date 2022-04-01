@@ -40,6 +40,9 @@ jobs:
             refs/heads/prd)
               echo 'KEEP_APP_ENV=prd' >> $GITHUB_ENV
             ;;
+            refs/heads/cmn)
+              echo 'KEEP_APP_ENV=cmn' >> $GITHUB_ENV
+            ;;
           esac
 
       - name: Zip module

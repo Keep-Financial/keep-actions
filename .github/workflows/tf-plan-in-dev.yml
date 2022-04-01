@@ -11,9 +11,7 @@ on:
 env:
   AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
   AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-  KEEP_BUILD_UTILS_HOME: /etc/keep-build-utils
   KEEP_DEPLOY_ENV: github_actions
-  KEEP_TF_PLAN_OUTPUT_FILE: ./tf-plan
   KEEP_APP_ENV: dev
 
 jobs:
