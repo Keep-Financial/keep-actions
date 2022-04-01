@@ -2,6 +2,10 @@ name: 'Terraform Deploy Root'
 
 on:
   workflow_call:
+    inputs:
+      KEEP_APP_ENV:
+        type: string
+        required: false
     secrets:
       AWS_ACCESS_KEY_ID:
         required: true
@@ -16,7 +20,7 @@ env:
 jobs:
   tf-deploy:
     name: 'Terraform Deploy'
-#    environment: ${{inputs.ENV}}
+    #    environment: ${{inputs.ENV}}
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/keep-financial/keep-build-image:latest
@@ -28,8 +32,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup Env
+      - name: Setup KEEP_APP_ENV
         run: |
+          if [[ "${{inputs.KEEP_APP_ENV}}" != "" ]]; then
+            exit 0
+          fi
           case ${{github.ref}} in
             refs/heads/dev)
               echo 'KEEP_APP_ENV=dev' >> $GITHUB_ENV
