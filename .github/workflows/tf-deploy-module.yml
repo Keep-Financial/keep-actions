@@ -47,6 +47,11 @@ jobs:
             refs/heads/cmn)
               echo 'KEEP_APP_ENV=cmn' >> $GITHUB_ENV
             ;;
+            *)
+              echo 'ERR: Cannot determine env by git ref'
+              echo "ERR: Ref - ${{github.ref}}"
+              exit 22
+            ;;
           esac
 
       - name: Zip module
