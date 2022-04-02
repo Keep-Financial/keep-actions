@@ -56,7 +56,7 @@ jobs:
           esac
 
       - name: Zip module
-        run: keep-package-tf-module-in-${{env.KEEP_APP_ENV}}
+        run: keep-tf-package-module-in-${{env.KEEP_APP_ENV}}
 
       - name: Upload module
-        run: keep-upload-packaged-tf-module-in-${{env.KEEP_APP_ENV}}
+        run: keep-tf-upload-packaged-module-in-${{env.KEEP_APP_ENV}}
