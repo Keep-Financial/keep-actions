@@ -2,6 +2,10 @@ name: 'Terraform Deploy Module'
 
 on:
   workflow_call:
+    inputs:
+      KEEP_APP_ENV:
+        type: string
+        required: false
     secrets:
       AWS_ACCESS_KEY_ID:
         required: true
