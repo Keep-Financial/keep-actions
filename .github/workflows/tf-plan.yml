@@ -24,7 +24,7 @@ jobs:
     #    environment: ${{inputs.ENV}}
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/keep-financial/keep-build-image:dev5
+      image: ghcr.io/keep-financial/keep-build-image:latest
       credentials:
         username: ${{github.actor}}
         password: ${{secrets.GITHUB_TOKEN}}
