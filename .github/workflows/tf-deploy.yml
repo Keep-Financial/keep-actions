@@ -32,41 +32,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup KEEP_APP_ENV
-        shell: bash
-        run: |
-          if [[ "${{inputs.KEEP_APP_ENV}}" != "" ]]; then
-            echo 'KEEP_APP_ENV=${{inputs.KEEP_APP_ENV}}' >> $GITHUB_ENV
-            exit 0
-          fi
-          case ${{github.ref}} in
-            refs/heads/dev)
-              echo 'KEEP_APP_ENV=dev' >> $GITHUB_ENV
-            ;;
-            refs/heads/stg)
-              echo 'KEEP_APP_ENV=stg' >> $GITHUB_ENV
-            ;;
-            refs/heads/prd)
-              echo 'KEEP_APP_ENV=prd' >> $GITHUB_ENV
-            ;;
-            refs/heads/cmn)
-              echo 'KEEP_APP_ENV=cmn' >> $GITHUB_ENV
-            ;;
-            *)
-              echo 'ERR: Cannot determine env by git ref'
-              echo "ERR: Ref - ${{github.ref}}"
-              exit 22
-            ;;
-          esac
+      - name: Setup Env
+        run: keep-setup-env-from-branch-ref ${{github.ref}} $GITHUB_ENV ${{inputs.KEEP_APP_ENV}}
 
-      - name: Terraform Init
-        run: keep-tf-init-in-${{env.KEEP_APP_ENV}}
+      - name: TF Init
+        run: keep-tf-init-in-env
 
-      - name: Terraform Validate
+      - name: TF Validate
         run: terraform validate
 
-      - name: Terraform Plan
-        run: keep-tf-plan-in-${{env.KEEP_APP_ENV}}
+      - name: TF Plan
+        run: keep-tf-plan-in-env
 
-      - name: Terraform Apply
-        run: keep-tf-apply-in-${{env.KEEP_APP_ENV}}
+      - name: TF Apply
+        run: keep-tf-apply-in-env
