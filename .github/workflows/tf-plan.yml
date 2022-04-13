@@ -24,7 +24,7 @@ jobs:
     #    environment: ${{inputs.ENV}}
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/keep-financial/keep-build-image:latest
+      image: ghcr.io/keep-financial/keep-build-image:dev5
       credentials:
         username: ${{github.actor}}
         password: ${{secrets.GITHUB_TOKEN}}
@@ -33,11 +33,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Setup Env
+        run: keep-setup-env-from-branch-ref ${{github.ref}} $GITHUB_ENV ${{inputs.KEEP_APP_ENV}}
+
       - name: Terraform Init
-        run: keep-tf-init-in-${{env.KEEP_APP_ENV}}
+        run: keep-tf-init-in-env
 
       - name: Terraform Validate
         run: terraform validate
 
       - name: Terraform Plan
-        run: keep-tf-plan-in-${{env.KEEP_APP_ENV}}
+        run: keep-tf-plan-in-env

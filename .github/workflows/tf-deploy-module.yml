@@ -23,7 +23,7 @@ jobs:
     #    environment: ${{inputs.ENV}}
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/keep-financial/keep-build-image:latest
+      image: ghcr.io/keep-financial/keep-build-image:dev5
       credentials:
         username: ${{github.actor}}
         password: ${{secrets.GITHUB_TOKEN}}
@@ -33,34 +33,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup Env
-        shell: bash
-        run: |
-          if [[ "${{inputs.KEEP_APP_ENV}}" != "" ]]; then
-            echo 'KEEP_APP_ENV=${{inputs.KEEP_APP_ENV}}' >> $GITHUB_ENV
-            exit 0
-          fi
-          case ${{github.ref}} in
-            refs/heads/dev)
-              echo 'KEEP_APP_ENV=dev' >> $GITHUB_ENV
-            ;;
-            refs/heads/stg)
-              echo 'KEEP_APP_ENV=stg' >> $GITHUB_ENV
-            ;;
-            refs/heads/prd)
-              echo 'KEEP_APP_ENV=prd' >> $GITHUB_ENV
-            ;;
-            refs/heads/cmn)
-              echo 'KEEP_APP_ENV=cmn' >> $GITHUB_ENV
-            ;;
-            *)
-              echo 'ERR: Cannot determine env by git ref'
-              echo "ERR: Ref - ${{github.ref}}"
-              exit 22
-            ;;
-          esac
+        run: keep-setup-env-from-branch-ref ${{github.ref}} $GITHUB_ENV ${{inputs.KEEP_APP_ENV}}
 
       - name: Zip module
-        run: keep-tf-package-module-in-${{env.KEEP_APP_ENV}}
+        run: keep-tf-package-module-in-env
 
       - name: Upload module
-        run: keep-tf-upload-packaged-module-in-${{env.KEEP_APP_ENV}}
+        run: keep-tf-upload-packaged-module-in-env
