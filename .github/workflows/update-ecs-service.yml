@@ -50,3 +50,6 @@ jobs:
       - name: Update ECS Service
         run: keep-update-ecs-service-in-env ${{inputs.TARGET_SERVICE_ID}} ${{inputs.TARGET_CLUSTER_ID}}
 
+      - name: Poll until all replaced
+        run: keep-poll-cluster-until-all-original-draining-in-env ${{inputs.TARGET_SERVICE_ID}} ${{inputs.TARGET_CLUSTER_ID}}
+
