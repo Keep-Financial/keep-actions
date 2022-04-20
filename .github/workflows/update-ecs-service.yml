@@ -5,7 +5,7 @@ on:
     inputs:
       KEEP_APP_ENV:
         type: string
-        required: true
+        required: false
       TARGET_SERVICE_ID:
         type: string
         required: true
