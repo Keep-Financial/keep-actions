@@ -30,19 +30,14 @@ env:
 jobs:
   update-ecs:
     name: 'Terraform Deploy'
-    #    environment: ${{inputs.ENV}}
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/keep-financial/keep-build-image:latest
+      image: ghcr.io/keep-financial/keep-build-image:tst
       credentials:
         username: ${{github.actor}}
         password: ${{github.token}}
 
     steps:
-      # https://github.com/actions/checkout/issues/760
-      - name: add safe.directory
-        run: git config --global --add safe.directory $PWD
-
       - name: Checkout
         uses: actions/checkout@v2
 
