@@ -71,7 +71,7 @@ jobs:
       - name: Docker Push
         run: keep-docker-push-server-target-here-v0-in-env ${{inputs.KEEP_TARGET_ID}}
 
-      - name: Deploy
+      - name: Update ECS Service
         run: keep-update-ecs-service-here-in-env ${{inputs.KEEP_TARGET_ID}}
 
       - name: Poll for completion
