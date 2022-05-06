@@ -1,0 +1,79 @@
+name: 'Deploy Server Target'
+
+on:
+  workflow_call:
+    inputs:
+      KEEP_TARGET_ID:
+        type: string
+        required: true
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+
+env:
+  AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+  AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+  KEEP_DEPLOY_ENV: github_actions
+  KEEP_DOCKER_CACHE_PATH: /tmp/.keep-buildx-cache
+  KEEP_ECS_POLL_TICK_INTERVAL: 15000
+  KEEP_ECS_POLL_LOCAL_NOTIFICATION: 0
+  KEEP_ECS_POLL_TIMEOUT: 300
+  KEEP_DOCKER_USERNAME: ${{github.actor}}
+  KEEP_DOCKER_PASSWORD: ${{github.token}}
+
+jobs:
+  server-deploy:
+    name: 'Deploy API Server'
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/keep-financial/keep-build-image:tst
+      # https://techtalkker.com/cicd/docker-in-docker-github-actions/
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      credentials:
+        username: ${{github.actor}}
+        password: ${{github.token}}
+    steps:
+      # https://github.com/actions/checkout/issues/760
+      - name: add safe.directory
+        run: git config --global --add safe.directory $PWD
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Env
+        run: keep-setup-env-from-branch-ref ${{github.ref}} $GITHUB_ENV
+
+      - name: Login To GHCR
+        run: |
+          docker login ghcr.io \
+            --username "${{env.KEEP_DOCKER_USERNAME}}" \
+            --password "${{env.KEEP_DOCKER_PASSWORD}}"
+
+      - name: Init Docker Buildx
+        run: keep-init-docker-container-builder-instance
+
+      # https://evilmartians.com/chronicles/build-images-on-github-actions-with-docker-layer-caching
+      # https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows#matching-a-cache-key
+      - name: Setup Caching
+        uses: actions/cache@v3
+        with:
+          path: ${{env.KEEP_DOCKER_CACHE_PATH}}
+          key: ${{runner.os}}-buildx-${{github.sha}}
+          restore-keys: |
+            ${{runner.os}}-buildx-
+
+      - name: Docker Build
+        run: keep-docker-build-server-target-here-v0-in-env ${{inputs.KEEP_TARGET_ID}}
+
+      - name: Docker Push
+        run: keep-docker-push-server-target-here-v0-in-env ${{inputs.KEEP_TARGET_ID}}
+
+      - name: Deploy
+        run: keep-update-ecs-service-here-in-env ${{inputs.KEEP_TARGET_ID}}
+
+      - name: Poll for completion
+        run: keep-poll-cluster-until-all-original-draining-here-in-env ${{inputs.KEEP_TARGET_ID}}
+
