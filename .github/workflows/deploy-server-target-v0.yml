@@ -6,6 +6,10 @@ on:
       KEEP_TARGET_ID:
         type: string
         required: true
+      KEEP_DOCKER_NOCACHE:
+        type: string
+        required: false
+        default: '0'
     secrets:
       AWS_ACCESS_KEY_ID:
         required: true
@@ -22,6 +26,7 @@ env:
   KEEP_ECS_POLL_TIMEOUT: 300
   KEEP_DOCKER_USERNAME: ${{github.actor}}
   KEEP_DOCKER_PASSWORD: ${{github.token}}
+  KEEP_DOCKER_NOCACHE: ${{inputs.KEEP_DOCKER_NOCACHE}}
 
 jobs:
   server-deploy:
