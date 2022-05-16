@@ -39,7 +39,7 @@ jobs:
         run: keep-tf-init-in-env
 
       - name: TF Validate
-        run: terraform validate
+        run: keep-exec-cmd-in-env 'terraform validate'
 
       - name: TF Plan
         run: keep-tf-plan-in-env
