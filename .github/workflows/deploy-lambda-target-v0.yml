@@ -1,0 +1,52 @@
+name: 'Deploy Server Target'
+
+on:
+  workflow_call:
+    inputs:
+      KEEP_TARGET_ID:
+        type: string
+        required: true
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+
+env:
+  AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+  AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+  KEEP_DEPLOY_ENV: github_actions
+
+jobs:
+  lambda-deploy:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/keep-financial/keep-build-image:tst
+      credentials:
+        username: ${{github.actor}}
+        password: ${{github.token}}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Env
+        run: keep-setup-env-from-branch-ref ${{github.ref}} $GITHUB_ENV
+
+      - name: Install Lambda Dependencies
+        run: keep-hook-install-dependencies ${{inputs.KEEP_TARGET_ID}}
+
+      - name: Build Lambda Target
+        run: keep-hook-build-target ${{inputs.KEEP_TARGET_ID}}
+
+      - name: Run Integration Tests
+        run: keep-hook-run-itests-in-env ${{inputs.KEEP_TARGET_ID}}
+
+      - name: Upload Lambda Code To S3
+        run: keep-deploy-lambda-target-v0-in-env ${{inputs.KEEP_TARGET_ID}} no-build no-test
+
+      - name: Upload Integration Test Logs
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: itest-logs
+          path: itest-logs/
