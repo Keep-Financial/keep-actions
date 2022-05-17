@@ -42,7 +42,7 @@ jobs:
         run: keep-hook-run-itests-in-env ${{inputs.KEEP_TARGET_ID}}
 
       - name: Upload Lambda Code To S3
-        run: keep-deploy-lambda-target-v0-in-env ${{inputs.KEEP_TARGET_ID}} no-build no-test
+        run: keep-deploy-lambda-target-v0-in-env ${{inputs.KEEP_TARGET_ID}} no-build no-test update
 
       - name: Upload Integration Test Logs
         if: failure()
