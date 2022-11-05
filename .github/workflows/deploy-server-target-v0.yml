@@ -30,7 +30,7 @@ env:
 
 jobs:
   server-deploy:
-    name: 'Deploy API Server'
+    name: 'Deploy Server Target'
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/keep-financial/keep-build-image:tst
