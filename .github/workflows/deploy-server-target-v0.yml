@@ -31,7 +31,8 @@ env:
 jobs:
   server-deploy:
     name: 'Deploy Server Target'
-    runs-on: Larger-Runner-01
+    runs-on: ubuntu-latest
+
     container:
       image: ghcr.io/keep-financial/keep-build-image:tst
       # https://techtalkker.com/cicd/docker-in-docker-github-actions/

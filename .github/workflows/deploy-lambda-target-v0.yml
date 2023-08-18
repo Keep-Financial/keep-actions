@@ -19,7 +19,7 @@ env:
 
 jobs:
   lambda-deploy:
-    runs-on: Larger-Runner-01
+    runs-on: ubuntu-latest
     container:
       image: ghcr.io/keep-financial/keep-build-image:tst
       credentials:

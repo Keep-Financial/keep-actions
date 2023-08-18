@@ -22,7 +22,7 @@ jobs:
   tf-deploy:
     name: 'Terraform Deploy'
     #    environment: ${{inputs.ENV}}
-    runs-on: Larger-Runner-01
+    runs-on: ubuntu-latest
     container:
       image: ghcr.io/keep-financial/keep-build-image:tst
       credentials:
